@@ -1,0 +1,1 @@
+# Elixir-Report-Builder\n\n## Overview\nEnterprise-grade report builder implementation in Elixir.\n\n## Quick Start (1-Click Build)\n\n```bash\ngit clone https://github.com/skylerblue333/Elixir-Report-Builder.git\ncd Elixir-Report-Builder\n# Build instructions depend on the language\n```\n
