@@ -35,6 +35,7 @@ defmodule SkyReportTest do
 
   test "rejects invalid titles and oversized cells" do
     assert {:error, _} = SkyReport.build("", [])
+
     assert {:error, _} =
              SkyReport.build("Report", [
                %{title: "Too large", rows: [%{value: String.duplicate("x", 2_001)}]}
