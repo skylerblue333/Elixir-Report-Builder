@@ -27,9 +27,14 @@ defmodule SkyReport do
 
   defp validate_title(title) do
     cond do
-      String.trim(title) == "" -> {:error, "report title is required"}
-      byte_size(title) > @max_title_bytes -> {:error, "report title exceeds #{@max_title_bytes} bytes"}
-      true -> :ok
+      String.trim(title) == "" ->
+        {:error, "report title is required"}
+
+      byte_size(title) > @max_title_bytes ->
+        {:error, "report title exceeds #{@max_title_bytes} bytes"}
+
+      true ->
+        :ok
     end
   end
 
@@ -86,7 +91,9 @@ defmodule SkyReport do
   end
 
   defp render_section(%{title: title, rows: rows}) do
-    columns = rows |> Enum.flat_map(&Map.keys/1) |> Enum.map(&to_string/1) |> Enum.uniq() |> Enum.sort()
+    columns =
+      rows |> Enum.flat_map(&Map.keys/1) |> Enum.map(&to_string/1) |> Enum.uniq() |> Enum.sort()
+
     header = "| " <> Enum.join(Enum.map(columns, &escape_cell/1), " | ") <> " |"
     divider = "| " <> Enum.join(Enum.map(columns, fn _ -> "---" end), " | ") <> " |"
 
@@ -113,7 +120,10 @@ defmodule SkyReport do
 
   defp render_value(nil), do: ""
   defp render_value(value) when is_binary(value), do: value
-  defp render_value(value) when is_atom(value) or is_number(value) or is_boolean(value), do: to_string(value)
+
+  defp render_value(value) when is_atom(value) or is_number(value) or is_boolean(value),
+    do: to_string(value)
+
   defp render_value(value), do: inspect(value, limit: 50, printable_limit: @max_cell_bytes)
 
   defp escape_text(value), do: value |> String.replace("\r", " ") |> String.replace("\n", " ")
