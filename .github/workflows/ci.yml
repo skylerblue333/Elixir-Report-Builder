@@ -1,12 +1,31 @@
-name: CI
-on: [push, pull_request]
+name: elixir-report-ci
+
+on:
+  push:
+    branches: [main, "product/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
 jobs:
-  test:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
         with:
-          python-version: '3.11'
-      - run: pip install -r requirements.txt
-      - run: pytest tests/ -v
+          otp-version: '27.3'
+          elixir-version: '1.18.4'
+      - name: Compile with warnings as errors
+        run: mix compile --warnings-as-errors
+      - name: Format
+        run: mix format --check-formatted
+      - name: Tests
+        run: mix test
+      - name: Build image
+        run: docker build -t sky-elixir-report:ci .
+      - name: Verify non-root image
+        run: test "$(docker run --rm --entrypoint=id sky-elixir-report:ci -u)" != "0"
+      - name: Container smoke test
+        run: docker run --rm sky-elixir-report:ci | grep -q 'sky-report-ready'

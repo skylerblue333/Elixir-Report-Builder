@@ -1,44 +1,51 @@
-<!-- PORTFOLIO PROJECT PROFILE: maintained by the repository owner -->
+# Sky Elixir Report Builder
 
-## Project profile and code-audit snapshot
+**Status: engineering beta.** A dependency-free Elixir library for rendering deterministic, bounded Markdown reports from in-memory data.
 
-**What this is:** **Elixir-Report-Builder** is a public repository described as: “Enterprise-grade report builder implementation in Elixir. #SkyCoin4444 #AI #Blockchain #DevOps #Innovation” Its dominant language signals are **Python (4 files)**.
+## Implemented behavior
 
-**Why it has value:** Its value is best understood through the implementation evidence currently present in the repository: **18 tracked files** were observed in the shallow audit, with the source structure and existing documentation providing the project’s specific context. This README does not treat a prototype, experiment, or archive as a production system without supporting evidence.
+- real Elixir implementation with no third-party Mix dependencies
+- report and section title validation
+- maximum 50 sections, 10,000 rows per section, 50 columns, and 2,000 bytes per rendered cell
+- deterministic alphabetical column ordering
+- Markdown table rendering with pipe/newline escaping
+- explicit empty-section rendering
+- ExUnit coverage for deterministic output, escaping, empty sections, malformed sections, and size limits
+- CI gates for warnings-as-errors compilation, formatter verification, tests, container build, non-root runtime verification, and container smoke execution
 
-**Implementation evidence:** 2 test-related file(s) detected; 2 dependency or package manifest(s) detected; 2 build/CI/infrastructure signal(s) detected; and 3 documentation or governance file(s) detected. Test filenames observed include `tests/__init__.py`, `tests/test_main.py`. Dependency or package files include `package.json`, `requirements.txt`. Build, CI, or infrastructure signals include `Dockerfile`, `.github/workflows/ci.yml`.
+## Verify
 
-**Current status:** The repository is tracked on the `main` branch. The existing source tree, configuration, tests, workflows, and documentation remain authoritative for supported behavior and maturity. A code audit is not a production-readiness certification, and the presence of a test or workflow file does not establish that all checks pass.
+```bash
+mix compile --warnings-as-errors
+mix format --check-formatted
+mix test
+```
 
-**Relationship to the wider portfolio:** This repository is one focused component of the broader Skyler Blue Spillers portfolio across AI, software engineering, cloud and DevOps, cybersecurity, blockchain, finance, education, social systems, and creative work. It may provide a service boundary, implementation pattern, experiment, archive, or reusable idea for related repositories. Treat repositories as technical dependencies only where documented interfaces and verified project requirements support that relationship.
+## Example
 
-**Quality and security note:** No obvious secret-like pattern was detected by the limited static scan; this is not a substitute for a security audit. No TODO/FIXME marker was detected in the scanned text files.
+```elixir
+{:ok, report} =
+  SkyReport.build("Weekly Report", [
+    %{
+      title: "Users",
+      rows: [
+        %{id: 1, name: "Alice"},
+        %{id: 2, name: "Bob"}
+      ]
+    }
+  ])
 
----
+IO.puts(report)
+```
 
-# Elixir Report Builder
+## SKYCOIN4444 integration
 
-![GitHub stars](https://img.shields.io/github/stars/skylerblue333/Elixir-Report-Builder?style=flat-square)
-![GitHub license](https://img.shields.io/github/license/skylerblue333/Elixir-Report-Builder?style=flat-square)
+Use this as a presentation primitive for deterministic internal summaries, analytics snapshots, education reports, workflow summaries, or developer tooling after data has already been authorized and prepared by the owning service. Keep data fetching, authorization, persistence, and delivery outside the renderer.
 
-## 🌟 Overview
-**Elixir-Report-Builder** is a professional-grade project within the **SkyCoin4444** ecosystem. It focuses on delivering high-value solutions in the domain of **Python**.
+## Explicit limitations
 
-## 🚀 Key Features
-- **Scalable Architecture**: Designed for enterprise-level growth and performance.
-- **Modern Standards**: Implements best practices for clean code and maintainability.
-- **Robust Integration**: Built to work seamlessly within modern cloud-native environments.
+This repository is not a BI platform, report scheduler, template-execution engine, HTML/PDF renderer, email delivery service, database connector, dashboard product, or production deployment. It does not fetch remote data, execute user code, write files, authenticate callers, authorize fields, redact sensitive information, or provide tenant isolation.
 
-## 🛠️ Technology Stack
-- **Primary Domain**: Python
-- **Ecosystem**: SkyCoin4444 Digital Platform
+Markdown output should still be treated as untrusted content when later embedded into HTML or another active rendering context; downstream renderers must apply their own escaping/sanitization rules.
 
-## 📂 Structure
-The project is organized into a modular structure to ensure clarity and ease of development.
-
-## 👨‍💻 Author
-**Skyler Blue Spillers**
-*Professional Chess Player & Software Engineer*
-
----
-*Powered by SkyCoin4444*
+See `SECURITY.md` and `CHANGELOG.md` for product and security boundaries.
